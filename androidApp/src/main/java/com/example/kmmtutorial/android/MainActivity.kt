@@ -3,37 +3,56 @@ package com.example.kmmtutorial.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.kmmtutorial.PostsRepository
+import com.example.kmmtutorial.android.theme.AppTheme
+import com.example.kmmtutorial.models.Post
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyApplicationTheme {
+            AppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = AppTheme.colors.ui02
                 ) {
                     val scope = rememberCoroutineScope()
-                    var text by remember { mutableStateOf("Loading") }
+                    val posts = remember { mutableStateListOf<Post>() }
+
                     LaunchedEffect(true) {
                         scope.launch {
-                            text = try {
-                                PostsRepository().getPosts().toString()
+                            try {
+                                val postsList = PostsRepository().getPosts()
+                                posts.clear()
+                                posts.addAll(postsList)
                             } catch (e: Exception) {
                                 e.localizedMessage ?: "error"
                             }
                         }
                     }
-                    GreetingView(text)
+
+                    LazyColumn(
+                        contentPadding = PaddingValues(
+                            vertical = 32.dp,
+                            horizontal = 16.dp
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        itemsIndexed(items = posts, key = { _, item -> item.id }) { _, post ->
+                            PostView(post = post, onPostClick = {
+
+                            })
+                        }
+                    }
                 }
             }
         }
@@ -41,14 +60,39 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun GreetingView(text: String) {
-    Text(text = text)
+fun PostView(
+    post: Post,
+    onPostClick: (Long) -> Unit
+) {
+    PostView(postId = post.id, title = post.title, body = post.body, onPostClick = onPostClick)
 }
 
-@Preview
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun DefaultPreview() {
-    MyApplicationTheme {
-        GreetingView("Hello, Android!")
+fun PostView(
+    postId: Long,
+    title: String,
+    body: String,
+    onPostClick: (Long) -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        backgroundColor = AppTheme.colors.ui01,
+        shape = RoundedCornerShape(8.dp),
+        onClick = { onPostClick(postId) }
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = title,
+                style = AppTheme.typography.h2,
+                color = AppTheme.colors.text01
+            )
+            Spacer(modifier = Modifier.size(16.dp))
+            Text(
+                text = body,
+                style = AppTheme.typography.body1,
+                color = AppTheme.colors.text02
+            )
+        }
     }
 }

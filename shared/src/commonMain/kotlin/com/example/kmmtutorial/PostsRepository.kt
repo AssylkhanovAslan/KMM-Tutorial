@@ -7,6 +7,7 @@ import io.ktor.client.request.*
 class PostsRepository {
     private val dataSource = NetworkModule.getHttpClient()
 
+    @Throws(Exception::class)
     suspend fun getPosts() : List<Post> {
         return dataSource.get("$BASE_URL/posts").body()
     }
