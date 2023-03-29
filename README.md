@@ -1,0 +1,1 @@
+Project based on Jetbrains KMM Tutorial and https://jsonplaceholder.typicode.com/
