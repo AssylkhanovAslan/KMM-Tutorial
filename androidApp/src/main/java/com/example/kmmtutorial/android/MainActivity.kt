@@ -11,9 +11,9 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.kmmtutorial.PostsRepository
+import com.example.kmmtutorial.data.repositories.PostsRepository
 import com.example.kmmtutorial.android.theme.AppTheme
-import com.example.kmmtutorial.models.Post
+import com.example.kmmtutorial.domain.models.Post
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
