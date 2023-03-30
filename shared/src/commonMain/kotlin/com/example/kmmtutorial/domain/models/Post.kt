@@ -1,4 +1,4 @@
-package com.example.kmmtutorial.models
+package com.example.kmmtutorial.domain.models
 
 import kotlinx.serialization.Serializable
 
