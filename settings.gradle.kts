@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KMM_Tutorial"
+rootProject.name = "KMM. JsonPlaceholder"
 include(":androidApp")
 include(":shared")
