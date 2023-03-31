@@ -1,4 +1,4 @@
-package com.example.kmmtutorial.di
+package com.example.kmmtutorial.di.modules
 
 import io.ktor.client.*
 import io.ktor.client.plugins.contentnegotiation.*

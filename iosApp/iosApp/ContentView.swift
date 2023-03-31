@@ -22,8 +22,10 @@ extension ContentView {
     class ViewModel: ObservableObject {
         @Published var text = "Loading..."
         @Published var posts = [Post]()
+        
+        let postsHelper = GetPostsHelper()
         init() {
-            PostsRepository().getPosts {
+            postsHelper.get {
                 postsList, error in
                 DispatchQueue.main.async {
                     if let postsList {self.posts += postsList} else {

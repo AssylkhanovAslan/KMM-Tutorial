@@ -8,7 +8,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 
 class CommentsRepositoryImpl(private val httpClient: HttpClient) : CommentsRepository {
-    override suspend fun getPostComments(postId: Int): List<Comment> {
+    override suspend fun getPostComments(postId: Long): List<Comment> {
         return httpClient.get("$BASE_URL/posts/$postId/comments").body()
     }
 }

@@ -11,10 +11,11 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.kmmtutorial.data.repositories.PostsRepository
 import com.example.kmmtutorial.android.theme.AppTheme
+import com.example.kmmtutorial.domain.interactors.GetPostsUseCase
 import com.example.kmmtutorial.domain.models.Post
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.get
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,36 +26,41 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = AppTheme.colors.ui02
                 ) {
-                    val scope = rememberCoroutineScope()
-                    val posts = remember { mutableStateListOf<Post>() }
-
-                    LaunchedEffect(true) {
-                        scope.launch {
-                            try {
-                                val postsList = PostsRepository().getPosts()
-                                posts.clear()
-                                posts.addAll(postsList)
-                            } catch (e: Exception) {
-                                e.localizedMessage ?: "error"
-                            }
-                        }
-                    }
-
-                    LazyColumn(
-                        contentPadding = PaddingValues(
-                            vertical = 32.dp,
-                            horizontal = 16.dp
-                        ),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        itemsIndexed(items = posts, key = { _, item -> item.id }) { _, post ->
-                            PostView(post = post, onPostClick = {
-
-                            })
-                        }
-                    }
+                    PostsList()
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun PostsList(getPostsUseCase: GetPostsUseCase = get()) {
+    val scope = rememberCoroutineScope()
+    val posts = remember { mutableStateListOf<Post>() }
+
+    LaunchedEffect(true) {
+        scope.launch {
+            try {
+                val postsList = getPostsUseCase()
+                posts.clear()
+                posts.addAll(postsList)
+            } catch (e: Exception) {
+                e.localizedMessage ?: "error"
+            }
+        }
+    }
+
+    LazyColumn(
+        contentPadding = PaddingValues(
+            vertical = 32.dp,
+            horizontal = 16.dp
+        ),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        itemsIndexed(items = posts, key = { _, item -> item.id }) { _, post ->
+            PostView(post = post, onPostClick = {
+
+            })
         }
     }
 }

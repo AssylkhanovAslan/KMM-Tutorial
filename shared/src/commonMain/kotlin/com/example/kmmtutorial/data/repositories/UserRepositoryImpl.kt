@@ -8,7 +8,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 
 class UserRepositoryImpl(private val httpClient: HttpClient) : UserRepository {
-    override suspend fun getUser(userId: Int): User {
+    override suspend fun getUser(userId: Long): User {
         return httpClient.get("$BASE_URL/users/$userId").body()
     }
 }
